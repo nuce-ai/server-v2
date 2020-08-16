@@ -15,9 +15,6 @@ initialize_db(app)
 api  = Api(app)
 initialize_routes(api)
 
-app.config.update(DEBUG = True)
-
-
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
