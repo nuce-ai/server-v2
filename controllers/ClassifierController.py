@@ -10,8 +10,9 @@ import json
 import os
 import subprocess
 import base64
+
 PATH_TO_MODEL = 'model/frozen_inference_graph.pb'
-PATH_TO_LABELS = 'data/label_map.pbtxt'
+PATH_TO_LABELS = 'label/label_map.pbtxt'
 NUM_CLASSES = 92
 
 class Classifier(object):
