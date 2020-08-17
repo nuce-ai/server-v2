@@ -3,18 +3,23 @@ import sys
 from flask_restful import Api
 from api.routes import initialize_routes
 from flask_cors import CORS
-from config.configDB import initialize_db
+from config.configDB import init_db
+from flask_graphql import GraphQLView
+from schema.index import schema
+
 app = Flask(__name__)
 
-app.config['MONGODB_SETTINGS'] = {
-    'db' : 'alook',
-    'host': 'mongodb+srv://alook:alook12345678@object-information.i7udl.mongodb.net/alook?retryWrites=true&w=majority'
-    }
+
 cors = CORS(app)
-initialize_db(app)
 api  = Api(app)
 initialize_routes(api)
 
 
+app.add_url_rule(
+    '/graphql',
+    view_func=GraphQLView.as_view('graphql', schema=schema, graphiql=True)
+)
+
 if __name__ == '__main__':
+    init_db()
     app.run(debug=True, host='0.0.0.0')
