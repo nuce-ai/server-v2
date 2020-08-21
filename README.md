@@ -2,6 +2,15 @@
 
 **Alook**  Server using Faster RCNN model for image classifier 
 
+## Technical
+
+```bash
+GraphQL
+Flask
+MongoDB
+Tensorflow API
+```
+
 ## Installation
 
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install foobar.
