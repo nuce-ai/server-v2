@@ -15,12 +15,12 @@ PATH_TO_MODEL = 'model/frozen_inference_graph.pb'
 PATH_TO_LABELS = 'label/label_map.pbtxt'
 NUM_CLASSES = 92
 
-class Classifier(object):
+class Detector(object):
     def __init__(self):
         self.detection_graph = tf.Graph()
         with self.detection_graph.as_default():
             od_graph_def = tf.compat.v1.GraphDef()
-            # Works up to here.
+           
             with tf.compat.v2.io.gfile.GFile(PATH_TO_MODEL, 'rb') as fid:
                 serialized_graph = fid.read()
                 od_graph_def.ParseFromString(serialized_graph)
@@ -31,17 +31,17 @@ class Classifier(object):
             self.d_classes = self.detection_graph.get_tensor_by_name('detection_classes:0')
             self.num_d = self.detection_graph.get_tensor_by_name('num_detections:0')
         self.sess = tf.compat.v1.Session(graph=self.detection_graph)
-    def get_classification(self, img):
-    # Bounding Box Detection.
+    def get_detection(self, img):
+    
         with self.detection_graph.as_default():
-            # Expand dimension since the model expects image to have shape [1, None, None, 3].
+           
             img_expanded = np.expand_dims(img, axis=0)  
             (boxes, scores, classes, num) = self.sess.run(
                 [self.d_boxes, self.d_scores, self.d_classes, self.num_d],
                 feed_dict={self.image_tensor: img_expanded})
         return boxes, scores, classes, num
-# init classifier 
-classifier = Classifier()
+# init detector
+detector = Detector()
 # load labelmap 
 label_map = label_map_util.load_labelmap(PATH_TO_LABELS)
 categories = label_map_util.convert_label_map_to_categories(label_map, max_num_classes=NUM_CLASSES, use_display_name=True)
@@ -70,7 +70,8 @@ class ClassifierController(Resource):
               upload = os.path.join('./upload/',filename)
               file.save(upload)
               wraped = cv2.imread(upload)       
-              boxes,scores,classes,num = classifier.get_classification(wraped)
+              boxes,scores,classes,num = detector.get_detection(wraped)
+              category_index[classes[0][0]].update({'score':round(scores[0][0]*100,2)})  
               return Response(json.dumps(category_index[classes[0][0]]), mimetype="application/json", status=200)
        else:
               return Response(json.dumps({"message": "upload image failed","status":"400"}), mimetype="application/json", status=400)
