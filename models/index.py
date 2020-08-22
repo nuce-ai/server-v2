@@ -25,7 +25,9 @@ class ObjectInformation(Document):
     meta = {'collection': 'object_information'}
     id_ = IntField(required=True,unique=True)
     name = StringField()
-    content = StringField()
+    name_vi = StringField()
+    description = StringField()
+    sub_description = StringField()
     url_video = StringField()
     url_icon = StringField()
-    sub_description = StringField()
+    
